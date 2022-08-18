@@ -1,5 +1,6 @@
 import NonFungibleToken from 0x631e88ae7f1d7c20
 import MetadataViews from 0x631e88ae7f1d7c20
+import FungibleToken from 0x9a0766d93b6608b7
 
 pub contract MonoCatMysteryBox : NonFungibleToken {
 
@@ -37,7 +38,10 @@ pub contract MonoCatMysteryBox : NonFungibleToken {
         pub fun getViews(): [Type] {
             return [
                 Type<MetadataViews.Display>(),
-                Type<MetadataViews.NFTCollectionDisplay>()
+                Type<MetadataViews.NFTCollectionDisplay>(),
+                Type<MetadataViews.Royalties>(),
+                Type<MetadataViews.NFTCollectionData>(),
+                Type<MetadataViews.ExternalURL>()
             ]
         }
 
@@ -46,11 +50,36 @@ pub contract MonoCatMysteryBox : NonFungibleToken {
                 case Type<MetadataViews.Display>():
                     return MetadataViews.Display(
                         name: self.metadata["name"]!,
-                        description: self.metadata["description"]!,
+                        description: "N(W)A(H)N(A)I(T)!!? A cat birth in Monoverse? Just come and grab your fellow.",
                         thumbnail: MetadataViews.HTTPFile(
                             url: "https://static-test.mono.fun/public/contents/projects/a73c1a41-be88-4c7c-a32e-929d453dbd39/nft/MysteryBox.png"
                         )
                     )
+                // collection data view
+                case Type<MetadataViews.NFTCollectionData>():
+                    return MetadataViews.NFTCollectionData(
+                        storagePath: MonoCatMysteryBox.CollectionStoragePath,
+                        publicPath: MonoCatMysteryBox.CollectionPublicPath,
+                        providerPath: /private/MonoCatMysteryBoxCollection,
+                        publicCollection: Type<&MonoCatMysteryBox.Collection{MonoCatMysteryBox.MonoCatMysteryBoxCollectionPublic}>(),
+                        publicLinkedType: Type<&MonoCatMysteryBox.Collection{MonoCatMysteryBox.MonoCatMysteryBoxCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(),
+                        providerLinkedType: Type<&MonoCatMysteryBox.Collection{MonoCatMysteryBox.MonoCatMysteryBoxCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Provider,MetadataViews.ResolverCollection}>(),
+                        createEmptyCollectionFunction: (fun (): @NonFungibleToken.Collection {
+                            return <-MonoCatMysteryBox.createEmptyCollection()
+                        })
+                    )
+                // royalties view
+                case Type<MetadataViews.Royalties>():
+                    return MetadataViews.Royalties([MetadataViews.Royalty(
+                        receiver: getAccount(0xc7246d622d0db9f1).getCapability<&FungibleToken.Vault>(/public/flowTokenReceiver),
+                        cut: 0.075,
+                        description: "MonoCats Official"
+                    )])
+                
+                // external url view
+                case Type<MetadataViews.ExternalURL>():
+                    return MetadataViews.ExternalURL("https://monocats.xyz/mainpage")
+
                 // collection display view
                 case Type<MetadataViews.NFTCollectionDisplay>():
                     let media = MetadataViews.Media(
@@ -67,7 +96,7 @@ pub contract MonoCatMysteryBox : NonFungibleToken {
                     )
                     return MetadataViews.NFTCollectionDisplay(
                         name: "MonoCats Gashapon",
-                        description: self.metadata["description"]!,
+                        description: "N(W)A(H)N(A)I(T)!!? A cat birth in Monoverse? Just come and grab your fellow.",
                         externalURL: MetadataViews.ExternalURL("https://monocats.xyz/mainpage"),
                         squareImage: media,
                         bannerImage: banner,
