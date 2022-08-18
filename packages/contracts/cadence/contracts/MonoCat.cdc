@@ -1,5 +1,6 @@
-import NonFungibleToken from 0x1d7e57aa55817448
-import MetadataViews from 0x1d7e57aa55817448
+import NonFungibleToken from 0x631e88ae7f1d7c20
+import MetadataViews from 0x631e88ae7f1d7c20
+import FungibleToken from 0x9a0766d93b6608b7
 
 pub contract MonoCat : NonFungibleToken {
 
@@ -35,19 +36,76 @@ pub contract MonoCat : NonFungibleToken {
 
        pub fun getViews(): [Type] {
             return [
-                Type<MetadataViews.Display>()
+                Type<MetadataViews.Display>(),
+                Type<MetadataViews.NFTCollectionDisplay>(),
+                Type<MetadataViews.Royalties>(),
+                Type<MetadataViews.NFTCollectionData>(),
+                Type<MetadataViews.ExternalURL>()
             ]
         }
 
         pub fun resolveView(_ view: Type): AnyStruct? {
             switch view {
+                // Display view
                 case Type<MetadataViews.Display>():
                     return MetadataViews.Display(
                         name: self.metadata["name"]!,
-                        description: self.metadata["description"]!,
+                        description: self.metadata["description"] ?? "",
                         thumbnail: MetadataViews.HTTPFile(
-                            url: self.metadata["thumbnail"]!
+                            url: "https://arweave.net/".concat(self.metadata["image"]!)
                         )
+                    )
+                // royalties view
+                case Type<MetadataViews.Royalties>():
+                    return MetadataViews.Royalties([MetadataViews.Royalty(
+                        receiver: getAccount(0xc7246d622d0db9f1).getCapability<&FungibleToken.Vault>(/public/flowTokenReceiver),
+                        cut: 0.075,
+                        description: "MonoCats Official"
+                    )])
+                
+                // collection data view
+                case Type<MetadataViews.NFTCollectionData>():
+                    return MetadataViews.NFTCollectionData(
+                        storagePath: MonoCat.CollectionStoragePath,
+                        publicPath: MonoCat.CollectionPublicPath,
+                        providerPath: /private/MonoCatCollection,
+                        publicCollection: Type<&MonoCat.Collection{MonoCat.MonoCatCollectionPublic}>(),
+                        publicLinkedType: Type<&MonoCat.Collection{MonoCat.MonoCatCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Receiver,MetadataViews.ResolverCollection}>(),
+                        providerLinkedType: Type<&MonoCat.Collection{MonoCat.MonoCatCollectionPublic,NonFungibleToken.CollectionPublic,NonFungibleToken.Provider,MetadataViews.ResolverCollection}>(),
+                        createEmptyCollectionFunction: (fun (): @NonFungibleToken.Collection {
+                            return <-MonoCat.createEmptyCollection()
+                        })
+                    )
+                
+                // external url view
+                case Type<MetadataViews.ExternalURL>():
+                    return MetadataViews.ExternalURL("https://monocats.xyz/mainpage")
+                
+                // collection display view
+                case Type<MetadataViews.NFTCollectionDisplay>():
+                    let media = MetadataViews.Media(
+                        file: MetadataViews.HTTPFile(
+                            url: "https://static-test.mono.fun/public/contents/projects/a73c1a41-be88-4c7c-a32e-929d453dbd39/nft/monocats/MonoCatSet_350x350.png"
+                        ),
+                        mediaType: "image/png"
+                    )
+                    let banner = MetadataViews.Media(
+                        file: MetadataViews.HTTPFile(
+                            url: "https://static-test.mono.fun/public/contents/projects/a73c1a41-be88-4c7c-a32e-929d453dbd39/carousels/mono%20cats%20PC.png"
+                        ),
+                        mediaType: "image/png"
+                    )
+                    return MetadataViews.NFTCollectionDisplay(
+                        name: "MonoCats",
+                        description: "Each NFT represent a MonoCats from the Meow Planets comes with unique design and utility.",
+                        externalURL: MetadataViews.ExternalURL("https://monocats.xyz/mainpage"),
+                        squareImage: media,
+                        bannerImage: banner,
+                        socials: {
+                            "twitter": MetadataViews.ExternalURL("https://monocats.xyz/twitter"),
+                            "discord": MetadataViews.ExternalURL("https://monocats.xyz/discord"),
+                            "instagram": MetadataViews.ExternalURL("https://monocats.xyz/instagram")
+                        }
                     )
             }
 
