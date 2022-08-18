@@ -1,5 +1,5 @@
-import NonFungibleToken from 0x1d7e57aa55817448
-import MetadataViews from 0x1d7e57aa55817448
+import NonFungibleToken from 0x631e88ae7f1d7c20
+import MetadataViews from 0x631e88ae7f1d7c20
 
 pub contract MonoCatMysteryBox : NonFungibleToken {
 
@@ -33,9 +33,11 @@ pub contract MonoCatMysteryBox : NonFungibleToken {
             self.metadata = metadata
         }
 
-       pub fun getViews(): [Type] {
+        // return all support views
+        pub fun getViews(): [Type] {
             return [
-                Type<MetadataViews.Display>()
+                Type<MetadataViews.Display>(),
+                Type<MetadataViews.NFTCollectionDisplay>()
             ]
         }
 
@@ -46,8 +48,34 @@ pub contract MonoCatMysteryBox : NonFungibleToken {
                         name: self.metadata["name"]!,
                         description: self.metadata["description"]!,
                         thumbnail: MetadataViews.HTTPFile(
-                            url: self.metadata["thumbnail"]!
+                            url: "https://static-test.mono.fun/public/contents/projects/a73c1a41-be88-4c7c-a32e-929d453dbd39/nft/MysteryBox.png"
                         )
+                    )
+                // collection display view
+                case Type<MetadataViews.NFTCollectionDisplay>():
+                    let media = MetadataViews.Media(
+                        file: MetadataViews.HTTPFile(
+                            url: "https://static-test.mono.fun/public/contents/projects/a73c1a41-be88-4c7c-a32e-929d453dbd39/nft/MysteryBox.png"
+                        ),
+                        mediaType: "image/png"
+                    )
+                    let banner = MetadataViews.Media(
+                        file: MetadataViews.HTTPFile(
+                            url: "https://static-test.mono.fun/public/contents/projects/a73c1a41-be88-4c7c-a32e-929d453dbd39/carousels/mono%20cats%20PC.png"
+                        ),
+                        mediaType: "image/png"
+                    )
+                    return MetadataViews.NFTCollectionDisplay(
+                        name: "MonoCats Gashapon",
+                        description: self.metadata["description"]!,
+                        externalURL: MetadataViews.ExternalURL("https://monocats.xyz/mainpage"),
+                        squareImage: media,
+                        bannerImage: banner,
+                        socials: {
+                            "twitter": MetadataViews.ExternalURL("https://monocats.xyz/twitter"),
+                            "discord": MetadataViews.ExternalURL("https://monocats.xyz/discord"),
+                            "instagram": MetadataViews.ExternalURL("https://monocats.xyz/instagram")
+                        }
                     )
             }
 

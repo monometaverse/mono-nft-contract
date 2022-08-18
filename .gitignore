@@ -115,3 +115,5 @@ coverage.json
 packages/contracts/.openzeppelin/unknown-31337.json
 .history/
 
+flow.local.json
+
