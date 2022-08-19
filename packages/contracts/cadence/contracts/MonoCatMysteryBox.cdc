@@ -1,6 +1,6 @@
-import NonFungibleToken from 0x631e88ae7f1d7c20
-import MetadataViews from 0x631e88ae7f1d7c20
-import FungibleToken from 0x9a0766d93b6608b7
+import NonFungibleToken from 0x1d7e57aa55817448
+import MetadataViews from 0x1d7e57aa55817448
+import FungibleToken from 0xf233dcee88fe0abe
 
 pub contract MonoCatMysteryBox : NonFungibleToken {
 
@@ -52,7 +52,7 @@ pub contract MonoCatMysteryBox : NonFungibleToken {
                         name: self.metadata["name"]!,
                         description: "N(W)A(H)N(A)I(T)!!? A cat birth in Monoverse? Just come and grab your fellow.",
                         thumbnail: MetadataViews.HTTPFile(
-                            url: "https://static-test.mono.fun/public/contents/projects/a73c1a41-be88-4c7c-a32e-929d453dbd39/nft/MysteryBox.png"
+                            url: "https://static.mono.fun/public/contents/projects/a73c1a41-be88-4c7c-a32e-929d453dbd39/nft/MysteryBox.png"
                         )
                     )
                 // collection data view
@@ -84,13 +84,13 @@ pub contract MonoCatMysteryBox : NonFungibleToken {
                 case Type<MetadataViews.NFTCollectionDisplay>():
                     let media = MetadataViews.Media(
                         file: MetadataViews.HTTPFile(
-                            url: "https://static-test.mono.fun/public/contents/projects/a73c1a41-be88-4c7c-a32e-929d453dbd39/nft/MysteryBox.png"
+                            url: "https://static.mono.fun/public/contents/projects/a73c1a41-be88-4c7c-a32e-929d453dbd39/nft/MysteryBox.png"
                         ),
                         mediaType: "image/png"
                     )
                     let banner = MetadataViews.Media(
                         file: MetadataViews.HTTPFile(
-                            url: "https://static-test.mono.fun/public/contents/projects/a73c1a41-be88-4c7c-a32e-929d453dbd39/carousels/mono%20cats%20PC.png"
+                            url: "https://static.mono.fun/public/contents/projects/a73c1a41-be88-4c7c-a32e-929d453dbd39/carousels/mono%20cats%20PC.png"
                         ),
                         mediaType: "image/png"
                     )

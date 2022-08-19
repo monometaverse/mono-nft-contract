@@ -1,6 +1,6 @@
-import NonFungibleToken from 0x631e88ae7f1d7c20
-import MetadataViews from 0x631e88ae7f1d7c20
-import FungibleToken from 0x9a0766d93b6608b7
+import NonFungibleToken from 0x1d7e57aa55817448
+import MetadataViews from 0x1d7e57aa55817448
+import FungibleToken from 0xf233dcee88fe0abe
 
 pub contract MonoCat : NonFungibleToken {
 
@@ -50,7 +50,7 @@ pub contract MonoCat : NonFungibleToken {
                 case Type<MetadataViews.Display>():
                     return MetadataViews.Display(
                         name: self.metadata["name"]!,
-                        description: self.metadata["description"] ?? "",
+                        description: self.metadata["description"]!,
                         thumbnail: MetadataViews.HTTPFile(
                             url: "https://arweave.net/".concat(self.metadata["image"]!)
                         )
@@ -85,13 +85,13 @@ pub contract MonoCat : NonFungibleToken {
                 case Type<MetadataViews.NFTCollectionDisplay>():
                     let media = MetadataViews.Media(
                         file: MetadataViews.HTTPFile(
-                            url: "https://static-test.mono.fun/public/contents/projects/a73c1a41-be88-4c7c-a32e-929d453dbd39/nft/monocats/MonoCatSet_350x350.png"
+                            url: "https://static.mono.fun/public/contents/projects/a73c1a41-be88-4c7c-a32e-929d453dbd39/nft/monocats/MonoCatSet_350x350.png"
                         ),
                         mediaType: "image/png"
                     )
                     let banner = MetadataViews.Media(
                         file: MetadataViews.HTTPFile(
-                            url: "https://static-test.mono.fun/public/contents/projects/a73c1a41-be88-4c7c-a32e-929d453dbd39/carousels/mono%20cats%20PC.png"
+                            url: "https://static.mono.fun/public/contents/projects/a73c1a41-be88-4c7c-a32e-929d453dbd39/carousels/mono%20cats%20PC.png"
                         ),
                         mediaType: "image/png"
                     )
