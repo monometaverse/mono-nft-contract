@@ -95,7 +95,7 @@ pub contract MonoCatMysteryBox : NonFungibleToken {
                         mediaType: "image/png"
                     )
                     return MetadataViews.NFTCollectionDisplay(
-                        name: "MonoCats Gashapon",
+                        name: "MonoCatsGachapon",
                         description: "N(W)A(H)N(A)I(T)!!? A cat birth in Monoverse? Just come and grab your fellow.",
                         externalURL: MetadataViews.ExternalURL("https://monocats.xyz/mainpage"),
                         squareImage: media,
